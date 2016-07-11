@@ -30,10 +30,32 @@ public class TestLambdaExp {
         return mathOperation.operation(a, b);
     }
 
-    public static MathOperation multiplication = (int a, int b) -> {return a * b;};
+    /**
+     * OLD APPROACH - using anonymous classes
+     */
+    public static MathOperation division = new MathOperation() {
+        @Override
+        public int operation(int a, int b) {
+            return a / b;
+        }
+    };
+
+    /**
+     * NEW APPROACH - using lambda expressions
+     */
+    public static MathOperation multiplication = (int a, int b) -> a * b;
+    public static MathOperation addition = (int a, int b) -> a + b;
+    public static MathOperation subtraction = (int a, int b) -> {
+        System.out.println("If more statements in body then curly braces are needed!");
+        return a - b;
+    };
+
 
     public static void main(String[] args) {
         System.out.println("225 * 4 = " + operate(225, 4, multiplication));
+        System.out.println("225 / 4 = " + operate(225, 4, division));
+        System.out.println("225 + 4 = " + operate(225, 4, addition));
+        System.out.println("225 - 4 = " + operate(225, 4, subtraction));
     }
 }
 

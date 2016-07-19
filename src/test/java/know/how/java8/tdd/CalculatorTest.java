@@ -6,7 +6,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 /**
- * Created by pskurski on 7/19/2016.
+ * Tests for TDD KATA - String Calculator.
  */
 public class CalculatorTest {
     private Calculator calculator;
@@ -49,6 +49,8 @@ public class CalculatorTest {
 
     @Test
     public void testAdd_newDelimeterShouldBeSupported() {
-
+        assertEquals(3, calculator.add("//;\n1;2"));
+        assertEquals(3, calculator.add("//?\n1?2"));
+        assertEquals(6, calculator.add("//>\n1>2\n3"));
     }
 }

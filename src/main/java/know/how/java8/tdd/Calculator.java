@@ -39,43 +39,95 @@ import java.util.List;
  *
  */
 public class Calculator {
+    private static final char DEFAULT_DELIMITER = ',';
+    private static final String DELIMITER_MARKER = "//";
+    private static final int DELIMITER_POSITION = 2;
+    private static final int NUMBER_START_POSITION = 4; // e.g: //;\n4;3;6;8
 
-    public int add(String numbers) {
+    private String numbers = null;
+    private final List<Integer> positiveValues = new ArrayList<>();
+    private final List<Integer> negativeValues = new ArrayList<>();
+
+    public int add(String stringWithNumbers) throws NegativesNotAllowedException {
+        clean();
+        prepare(stringWithNumbers);
+
         if (numbers.equals("")) {
             return 0;
         }
 
-        List<Integer> values = getValuesFromString(numbers);
-        return sumValues(values);
+        return sumValues(getNumbersFromString());
     }
 
-    private List<Integer> getValuesFromString(String numbers) {
-        char delimeter = ',';
-        if (numbers.startsWith("//")) {
-            delimeter = numbers.charAt(2);
-            numbers = numbers.substring(4);
+    private void prepare(String stringWithNumbers) {
+        this.numbers = stringWithNumbers;
+    }
+
+    private void clean() {
+        positiveValues.clear();
+        negativeValues.clear();
+    }
+
+    private List<Integer> getNumbersFromString() throws NegativesNotAllowedException {
+        char delimiter = DEFAULT_DELIMITER;
+        if (numbers.startsWith(DELIMITER_MARKER)) {
+            delimiter = numbers.charAt(DELIMITER_POSITION);
+            numbers = numbers.substring(NUMBER_START_POSITION);
         }
 
+        return getNumbersFromStringBasedOnDelimiter(delimiter);
+    }
+
+    private List<Integer> getNumbersFromStringBasedOnDelimiter(char delimiter)
+            throws NegativesNotAllowedException {
         char[] chars = numbers.toCharArray();
-        List<Integer> values = new ArrayList<Integer>();
 
         int beginIndex = 0;
-        boolean noDelimeter = true;
         for (int i=0; i<chars.length; i++) {
-            if (chars[i] == delimeter || chars[i] == '\n') {
-                values.add(Integer.valueOf(numbers.substring(beginIndex, i)));
+            if (chars[i] == delimiter || chars[i] == '\n') {
+                Integer value = Integer.valueOf(numbers.substring(beginIndex, i));
+                addNumberToCollectionBasedOnSign(value);
                 beginIndex = i+1;
-                noDelimeter = false;
             }
         }
 
-        if (noDelimeter) {
-            values.add(Integer.valueOf(numbers));
-        } else {
-            values.add(Integer.valueOf(numbers.substring(beginIndex, numbers.length())));
+        Integer lastNumber = getLastNumberInString(beginIndex);
+        addNumberToCollectionBasedOnSign(lastNumber);
+
+        if (!negativeValues.isEmpty()) {
+            throw new NegativesNotAllowedException(createMessageWithNegativesNumbers(negativeValues));
         }
 
-        return values;
+        return positiveValues;
+    }
+
+    private void addNumberToCollectionBasedOnSign(Integer number) {
+        if (number >= 0 && number <= 1000) {
+            positiveValues.add(number);
+        } else if (number < 0) {
+            negativeValues.add(number);
+        }
+    }
+
+    private Integer getLastNumberInString(int beginIndex) {
+        Integer lastNumber;
+        if (positiveValues.isEmpty() && negativeValues.isEmpty()) {
+            lastNumber = Integer.valueOf(numbers);
+        } else {
+            lastNumber = Integer.valueOf(numbers.substring(beginIndex));
+        }
+
+        return lastNumber;
+    }
+
+    private String createMessageWithNegativesNumbers(List<Integer> negativeNumbers) {
+        StringBuilder sb = new StringBuilder();
+        for (Integer i : negativeNumbers) {
+            sb.append(" ");
+            sb.append(i);
+        }
+
+        return sb.toString();
     }
 
     private int sumValues(List<Integer> values) {

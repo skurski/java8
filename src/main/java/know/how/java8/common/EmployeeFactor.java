@@ -22,6 +22,8 @@ public class EmployeeFactor {
                     .setId(i)
                     .setSalary(random.nextInt(10000))
                     .setExperiance(Arrays.asList(experiance[random.nextInt(5)]))
+                    .setAge(random.nextInt(50) + 18)
+                    .setOffice(Office.getOfficeById(random.nextInt(4)))
                     .build());
         }
 

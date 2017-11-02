@@ -11,7 +11,9 @@ public class Employee {
     private String firstName;
     private String lastName;
     private double salary;
+    private int age;
     private List<String> experiance;
+    private Office office;
 
     public Employee() {}
 
@@ -20,7 +22,9 @@ public class Employee {
         this.firstName = builder.firstName;
         this.lastName = builder.lastName;
         this.salary = builder.salary;
+        this.age = builder.age;
         this.experiance = builder.experiance;
+        this.office = builder.office;
     }
 
     public static class Builder {
@@ -28,7 +32,9 @@ public class Employee {
         private String firstName;
         private String lastName;
         private double salary;
+        private int age;
         private List<String> experiance;
+        private Office office;
 
         public Builder(String firstName, String lastName) {
             this.firstName = firstName;
@@ -47,6 +53,16 @@ public class Employee {
 
         public Builder setExperiance(List<String> experiance) {
             this.experiance = experiance;
+            return this;
+        }
+
+        public Builder setAge(int age) {
+            this.age = age;
+            return this;
+        }
+
+        public Builder setOffice(Office office) {
+            this.office = office;
             return this;
         }
 
@@ -79,6 +95,14 @@ public class Employee {
         return experiance;
     }
 
+    public int getAge() {
+        return age;
+    }
+
+    public Office getOffice() {
+        return office;
+    }
+
     @Override
     public String toString() {
         return "Employee{" +
@@ -86,7 +110,9 @@ public class Employee {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", salary=" + salary +
+                ", age=" + age +
                 ", experiance=" + experiance +
+                ", office=" + office +
                 '}';
     }
 }

@@ -62,5 +62,20 @@ public class Exercises {
                 .toArray(String[]::new);
         System.out.println(Arrays.toString(wordList));
 
+        /** reduce */
+        String sentence = words.stream()
+                .map(String::toUpperCase)
+                .reduce("\t", (s1, s2) -> s1 + " " + s2);
+        System.out.println(sentence + "!");
+
+        int numOfChars = words.stream()
+                .mapToInt(String::length)
+                .sum();
+        System.out.println("Total number of characters in all strings: " + numOfChars);
+
+        long numOfWordsContainingH = words.stream()
+                .filter(s -> s.contains("h"))
+                .count();
+        System.out.println("Number of words containing 'h': " + numOfWordsContainingH);
     }
 }

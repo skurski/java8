@@ -2,10 +2,10 @@ package know.how.java8.streams;
 
 import know.how.java8.common.Employee;
 import know.how.java8.common.EmployeeFactor;
+import know.how.java8.common.Office;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -67,5 +67,47 @@ public class GeneralOverview {
                 .findFirst()
                 .orElse(100);
         System.out.println(intValue);
+
+        /** sorted, min, max, limit, skip */
+        List<Employee> sortedEmployess = employees.stream()
+                .sorted((e1, e2) -> e1.getFirstName().compareTo(e2.getFirstName()))
+                .limit(4)
+                .skip(2)
+                .collect(Collectors.toList());
+        sortedEmployess.forEach(System.out::println);
+
+        /** allMatch, anyMatch, noneMatch, count */
+        boolean anyReachEmployee = employees.stream()
+                .anyMatch(e -> e.getSalary() > 20000);
+        System.out.println("Any reach employee: " + anyReachEmployee);
+
+        long numOfEmplExperiencedWithJava = employees.stream()
+                .filter(e -> e.getExperiance().contains("java"))
+                .count();
+        System.out.println("Number of employees experianced with Java: " + numOfEmplExperiencedWithJava);
+
+        /** IntStream, LongStream, Double Stream */
+        OptionalDouble averageAge = employees.stream()
+                .mapToInt(Employee::getAge)
+                .average();
+        System.out.println("Average age: " + averageAge.orElse(18.00));
+
+        /** Collectors, string joining, creating map */
+        Map<Office, List<Employee>> employeeByOffice = employees.stream()
+                .collect(Collectors.groupingBy(Employee::getOffice));
+        for (Office office : Office.values()) {
+            System.out.println("Employees list in " + office + ": " + employeeByOffice.get(office));
+        }
+
+        Map<Boolean, List<Employee>> richEmployees = employees.stream()
+                .collect(Collectors.partitioningBy(e -> e.getSalary() > 1500));
+        System.out.println("Rich employees: " + richEmployees.get(true));
+        System.out.println("Pure employees: " + richEmployees.get(false));
+
+        String joinedExperience = employees.stream()
+                .flatMap(e -> e.getExperiance().stream())
+                .distinct()
+                .collect(Collectors.joining(", "));
+        System.out.println("Collected experiences from all employees: " + joinedExperience);
     }
 }
